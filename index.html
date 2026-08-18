@@ -41,7 +41,7 @@ const desc=["Собери первую зелёную основу.","Добав
 const renderer=new THREE.WebGLRenderer({canvas:document.getElementById("three"),antialias:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x111111);
-const camera=new THREE.PerspectiveCamera(42,1,.1,500);camera.position.set(12,10,18);
+const camera=new THREE.PerspectiveCamera(42,1,.1,500);camera.position.set(12,10,18);camera.lookAt(0,3,0);
 scene.add(new THREE.HemisphereLight(0xffffff,0x333333,2));
 const dl=new THREE.DirectionalLight(0xffffff,2.5);dl.position.set(8,16,10);scene.add(dl);
 const root=new THREE.Group();scene.add(root);
