@@ -75,7 +75,7 @@ function part(x,y,z,w,h,d,mat){let m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d)
 function clear(){while(root.children.length)root.remove(root.children[0])}
 function build(s){
 clear();
-part(0,0,0,9,4.3,.55,M.sole);part(-2,.5,0,4.5,3.9,.55,M.green);part(2,.5,0,4.5,3.7,.55,M.green);
+part(0,0,0,9,.55,4.3,M.sole);;part(-2,.5,0,4.5,3.9,.55,M.green);part(2,.5,0,4.5,3.7,.55,M.green);
 if(s>=2){part(.2,1,0,6,.65,.55,M.cream);part(2.8,1.05,0,3.4,.3,.4,M.green2)}
 if(s>=3){part(-1.8,1,0,3.8,3,.55,M.green);part(1.8,1,0,3.6,2.8,.55,M.green)}
 if(s>=4){part(-1.8,1.5,0,2.3,2.2,.55,M.yellow);part(0,1.5,0,3.2,.9,.55,M.cream)}
