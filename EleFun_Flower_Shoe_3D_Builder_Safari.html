@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>EleFun Flower Shoe — 3D Builder</title>
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#111;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{height:58px;background:#1b1b1b;display:flex;align-items:center;justify-content:space-between;padding:8px 14px;box-sizing:border-box}
+h1{font-size:16px;margin:0}.sub{font-size:11px;color:#aaa;margin-top:3px}
+#app{height:calc(100% - 58px);display:flex}
+#scene{flex:1;min-width:0;position:relative}
+#three{width:100%;height:100%;display:block}
+#panel{width:310px;background:#202020;padding:12px;box-sizing:border-box;overflow:auto}
+.nav{display:flex;gap:8px}.nav button{flex:1}
+button{border:0;border-radius:11px;padding:12px;font-weight:700}
+#title{font-size:19px;font-weight:800;margin-top:12px}.muted{color:#aaa;font-size:12px;line-height:1.4}
+.bar{height:6px;background:#333;border-radius:10px;margin:10px 0}.fill{height:100%;background:#fff;border-radius:10px}
+@media(max-width:720px){#app{display:block}#scene{height:60%}#panel{height:40%;width:100%;padding:9px}}
+</style>
+</head>
+<body>
+<header>
+<div><h1>EleFun Fantasy Collection — Flower Shoe</h1><div class="sub">3D-инструкция • 1170 деталей • Model 1350</div></div>
+<div class="sub">Safari</div>
+</header>
+<div id="app">
+<div id="scene"><canvas id="three"></canvas></div>
+<div id="panel">
+<div class="nav"><button id="prev">← Назад</button><button id="next">Далее →</button></div>
+<div id="title"></div><div id="desc" class="muted"></div><div class="bar"><div id="fill" class="fill"></div></div>
+<div class="muted">Поворачивай модель пальцем прямо на экране. Два пальца — масштаб.</div>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.min.js"></script>
+<script>
+const titles=["Основа подошвы","Задняя дуга","Наращивание основы","Жёлтая секция","Соединение","Центральные планки","Боковые детали","Малые детали","Носовая деталь","Верхняя секция","Боковые крепления","Следующая секция","Сборка узлов","Зелёные элементы","Малый жёлтый узел","Крепление","Длинная секция","Продолжение верха","Обрамление","Большая жёлтая вставка","Верхний слой","Промежуточный слой","Переход","Передняя верхняя часть","Фиксация","Декоративный блок","Финальные детали"];
+const desc=["Собери первую зелёную основу.","Добавь светлую центральную планку и две зелёные дуги.","Добавь следующие зелёные пластины.","Установи жёлтые и светлые элементы.","Соедини собранный узел с подошвой.","Добавь длинные жёлтые элементы.","Установи первые боковые элементы.","Собери две небольшие зелёные детали.","Установи небольшой жёлтый узел.","Продолжи верхнюю часть жёлтыми деталями.","Добавь зелёные элементы.","Добавь очередную жёлтую секцию.","Установи подготовленные элементы на основу.","Собери две зелёные детали.","Добавь деталь к подготовленному блоку.","Установи узел на боковую часть обуви.","Собери и закрепи длинные жёлтые элементы.","Добавь следующую жёлтую секцию.","Установи жёлтые пластины по краям.","Заполни секцию жёлтой пластиной.","Добавь несколько длинных жёлтых пластин.","Добавь пять длинных деталей.","Собери переходную жёлтую секцию.","Добавь крупную верхнюю жёлтую область.","Добавь малые жёлтые/светлые крепления.","Установи дополнительные элементы на верхнюю часть.","Добавь финальные декоративные детали."];
+
+const renderer=new THREE.WebGLRenderer({canvas:document.getElementById("three"),antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x111111);
+const camera=new THREE.PerspectiveCamera(42,1,.1,500);camera.position.set(12,10,18);
+scene.add(new THREE.HemisphereLight(0xffffff,0x333333,2));
+const dl=new THREE.DirectionalLight(0xffffff,2.5);dl.position.set(8,16,10);scene.add(dl);
+const root=new THREE.Group();scene.add(root);
+
+const M={
+ sole:new THREE.MeshStandardMaterial({color:0xa9a9ae,roughness:.8}),
+ green:new THREE.MeshStandardMaterial({color:0x718f4c,roughness:.72}),
+ green2:new THREE.MeshStandardMaterial({color:0x91a95c,roughness:.72}),
+ yellow:new THREE.MeshStandardMaterial({color:0xd5b83f,roughness:.68}),
+ cream:new THREE.MeshStandardMaterial({color:0xe5d09a,roughness:.7})
+};
+function part(x,y,z,w,h,d,mat){let m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);m.position.set(x,y,z);root.add(m)}
+function clear(){while(root.children.length)root.remove(root.children[0])}
+function build(s){
+clear();
+part(0,0,0,9,4.3,.55,M.sole);part(-2,.5,0,4.5,3.9,.55,M.green);part(2,.5,0,4.5,3.7,.55,M.green);
+if(s>=2){part(.2,1,0,6,.65,.55,M.cream);part(2.8,1.05,0,3.4,.3,.4,M.green2)}
+if(s>=3){part(-1.8,1,0,3.8,3,.55,M.green);part(1.8,1,0,3.6,2.8,.55,M.green)}
+if(s>=4){part(-1.8,1.5,0,2.3,2.2,.55,M.yellow);part(0,1.5,0,3.2,.9,.55,M.cream)}
+if(s>=5)part(0,1.9,0,7.6,3,.55,M.sole);
+if(s>=6){part(-.2,2.35,0,6.2,.6,.55,M.yellow);part(.5,2.35,0,4.6,.55,.55,M.yellow)}
+if(s>=7){part(-3.3,2.1,-1.2,1.1,.6,.7,M.green2);part(-3.3,2.1,1.2,1.1,.6,.7,M.green2);part(3.1,2.1,0,1,.6,.7,M.green2)}
+if(s>=8){part(-2.5,2.65,1.3,1.2,.5,.7,M.green2);part(-2.5,2.65,-1.3,1.2,.5,.7,M.green2)}
+if(s>=9)part(-3.35,2.65,0,.8,.55,.8,M.yellow);
+if(s>=10){part(1.3,3,0,3,1.2,.55,M.yellow);part(-.9,3,0,2.8,1,.55,M.yellow)}
+if(s>=11){part(-2.7,3.3,1.1,.8,.55,1.3,M.green);part(-2.7,3.3,-1.1,.8,.55,1.3,M.green)}
+if(s>=12)part(.5,3.45,0,4,.9,.55,M.yellow);
+if(s>=13){part(2.1,3.8,0,2,.85,.55,M.cream);part(2.9,4.05,0,.7,.5,.7,M.green2)}
+if(s>=14){part(-1.8,3.8,1.1,1,.55,.8,M.green2);part(-1.8,3.8,-1.1,1,.55,.8,M.green2)}
+if(s>=15)part(-1.8,4.2,0,.9,.5,.9,M.yellow);
+if(s>=16)part(-.3,4.15,0,2.3,.8,.55,M.yellow);
+if(s>=17){part(1.5,4.5,0,3.8,.55,.55,M.yellow);part(1.1,4.9,0,3,.55,.55,M.yellow)}
+if(s>=18)part(0,5.2,0,4.5,1,.55,M.yellow);
+if(s>=19){part(-1.9,5.4,0,1.2,2,.55,M.yellow);part(1.9,5.4,0,1.2,2,.55,M.yellow)}
+if(s>=20)part(-2,5.5,0,2.2,2,.55,M.yellow);
+if(s>=21){part(-.2,5.8,0,5.5,.55,.55,M.yellow);part(1.1,6.15,0,4,.55,.55,M.yellow)}
+if(s>=22){part(-1,6.5,0,5.4,.55,.55,M.yellow);part(1.5,6.5,0,3,.55,.55,M.yellow)}
+if(s>=23){part(-.4,6.9,0,2.8,1.6,.55,M.cream);part(-.4,7.25,0,1,.45,.8,M.yellow)}
+if(s>=24){part(.8,7.35,0,4.2,2,.55,M.yellow);part(.8,7.75,0,3.5,.55,.55,M.cream)}
+if(s>=25){part(-.9,7.7,1,.8,.55,.8,M.yellow);part(-.9,7.7,-1,.8,.55,.8,M.yellow)}
+if(s>=26){part(2,7.85,1.1,.75,.55,1.1,M.cream);part(2,7.85,-1.1,.75,.55,1.1,M.cream)}
+if(s>=27)part(2.3,8.15,0,1.6,.4,1.6,M.green2);
+}
+let step=1,drag=false,lastX=0,lastY=0,rx=.75,ry=-.25;
+function ui(){document.getElementById("title").textContent="Шаг "+step+" — "+titles[step-1];document.getElementById("desc").textContent=desc[step-1];document.getElementById("fill").style.width=step/27*100+"%";document.getElementById("prev").disabled=step===1;document.getElementById("next").disabled=step===27;build(step)}
+document.getElementById("prev").onclick=()=>{if(step>1){step--;ui()}};document.getElementById("next").onclick=()=>{if(step<27){step++;ui()}};
+renderer.domElement.addEventListener("pointerdown",e=>{drag=true;lastX=e.clientX;lastY=e.clientY});
+window.addEventListener("pointerup",()=>drag=false);
+window.addEventListener("pointermove",e=>{if(!drag)return;ry+=(e.clientX-lastX)*.01;rx+=(e.clientY-lastY)*.01;lastX=e.clientX;lastY=e.clientY;root.rotation.y=ry;root.rotation.x=rx});
+function resize(){let e=document.getElementById("scene"),w=e.clientWidth,h=e.clientHeight;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false)}
+addEventListener("resize",resize);resize();ui();
+renderer.setAnimationLoop(()=>renderer.render(scene,camera));
+</script>
+</body></html>
