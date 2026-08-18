@@ -38,13 +38,31 @@ button{border:0;border-radius:11px;padding:12px;font-weight:700}
 const titles=["Основа подошвы","Задняя дуга","Наращивание основы","Жёлтая секция","Соединение","Центральные планки","Боковые детали","Малые детали","Носовая деталь","Верхняя секция","Боковые крепления","Следующая секция","Сборка узлов","Зелёные элементы","Малый жёлтый узел","Крепление","Длинная секция","Продолжение верха","Обрамление","Большая жёлтая вставка","Верхний слой","Промежуточный слой","Переход","Передняя верхняя часть","Фиксация","Декоративный блок","Финальные детали"];
 const desc=["Собери первую зелёную основу.","Добавь светлую центральную планку и две зелёные дуги.","Добавь следующие зелёные пластины.","Установи жёлтые и светлые элементы.","Соедини собранный узел с подошвой.","Добавь длинные жёлтые элементы.","Установи первые боковые элементы.","Собери две небольшие зелёные детали.","Установи небольшой жёлтый узел.","Продолжи верхнюю часть жёлтыми деталями.","Добавь зелёные элементы.","Добавь очередную жёлтую секцию.","Установи подготовленные элементы на основу.","Собери две зелёные детали.","Добавь деталь к подготовленному блоку.","Установи узел на боковую часть обуви.","Собери и закрепи длинные жёлтые элементы.","Добавь следующую жёлтую секцию.","Установи жёлтые пластины по краям.","Заполни секцию жёлтой пластиной.","Добавь несколько длинных жёлтых пластин.","Добавь пять длинных деталей.","Собери переходную жёлтую секцию.","Добавь крупную верхнюю жёлтую область.","Добавь малые жёлтые/светлые крепления.","Установи дополнительные элементы на верхнюю часть.","Добавь финальные декоративные детали."];
 
-const renderer=new THREE.WebGLRenderer({canvas:document.getElementById("three"),antialias:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-const scene=new THREE.Scene();scene.background=new THREE.Color(0x111111);
-const camera=new THREE.PerspectiveCamera(42,1,.1,500);camera.position.set(12,10,18);camera.lookAt(0,3,0);
+const canvas=document.getElementById("three");
+const renderer=new THREE.WebGLRenderer({
+  canvas:canvas,
+  antialias:true,
+  alpha:false
+});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+renderer.setClearColor(0x111111,1);
+
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x111111);
+
+const camera=new THREE.PerspectiveCamera(42,1,0.1,500);
+camera.position.set(0,4,16);
+camera.lookAt(0,4,0);
+
+scene.add(new THREE.AmbientLight(0xffffff,1.5));
 scene.add(new THREE.HemisphereLight(0xffffff,0x333333,2));
-const dl=new THREE.DirectionalLight(0xffffff,2.5);dl.position.set(8,16,10);scene.add(dl);
-const root=new THREE.Group();scene.add(root);
+
+const dl=new THREE.DirectionalLight(0xffffff,2.5);
+dl.position.set(8,16,10);
+scene.add(dl);
+
+const root=new THREE.Group();
+scene.add(root);
 
 const M={
  sole:new THREE.MeshStandardMaterial({color:0xa9a9ae,roughness:.8}),
@@ -91,8 +109,28 @@ document.getElementById("prev").onclick=()=>{if(step>1){step--;ui()}};document.g
 renderer.domElement.addEventListener("pointerdown",e=>{drag=true;lastX=e.clientX;lastY=e.clientY});
 window.addEventListener("pointerup",()=>drag=false);
 window.addEventListener("pointermove",e=>{if(!drag)return;ry+=(e.clientX-lastX)*.01;rx+=(e.clientY-lastY)*.01;lastX=e.clientX;lastY=e.clientY;root.rotation.y=ry;root.rotation.x=rx});
-function resize(){let e=document.getElementById("scene"),w=e.clientWidth,h=e.clientHeight;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false)}
-addEventListener("resize",resize);resize();ui();
-renderer.setAnimationLoop(()=>renderer.render(scene,camera));
+function resize(){
+  const e=document.getElementById("scene");
+  const w=e.clientWidth;
+  const h=e.clientHeight;
+
+  if(!w || !h) return;
+
+  camera.aspect=w/h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w,h,false);
+}
+
+addEventListener("resize",resize);
+resize();
+ui();
+
+requestAnimationFrame(()=>{
+  resize();
+});
+
+renderer.setAnimationLoop(()=>{
+  renderer.render(scene,camera);
+});
 </script>
 </body></html>
